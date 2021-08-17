@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS", "TMS\TMS.csproj", "{D6320C31-777D-4E9A-96FD-C3A0111175CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.Model", "TMS.Model\TMS.Model.csproj", "{80A2EBFF-2CFA-431A-9AE5-AA7697CA3639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMS.Repository", "TMS.Repository\TMS.Repository.csproj", "{4E3D3BAD-9793-4F10-9076-E9C712AB1DF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6320C31-777D-4E9A-96FD-C3A0111175CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6320C31-777D-4E9A-96FD-C3A0111175CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6320C31-777D-4E9A-96FD-C3A0111175CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6320C31-777D-4E9A-96FD-C3A0111175CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A2EBFF-2CFA-431A-9AE5-AA7697CA3639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A2EBFF-2CFA-431A-9AE5-AA7697CA3639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A2EBFF-2CFA-431A-9AE5-AA7697CA3639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A2EBFF-2CFA-431A-9AE5-AA7697CA3639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E3D3BAD-9793-4F10-9076-E9C712AB1DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E3D3BAD-9793-4F10-9076-E9C712AB1DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E3D3BAD-9793-4F10-9076-E9C712AB1DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E3D3BAD-9793-4F10-9076-E9C712AB1DF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {25A65DE6-D332-4722-B0E5-22143B25DDAD}
+	EndGlobalSection
+EndGlobal
