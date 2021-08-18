@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TMS.Model
 {
-    class CircuitManage
+   public class CircuitManage
     {
+        
     }
 }

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace TMS.Model
 {
-   public class ShiooerManage
+   public class GasolineManage
     {
-
     }
 }
