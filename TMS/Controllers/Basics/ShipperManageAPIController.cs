@@ -1,79 +1,146 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.Model;
-using TMS.Repository;
+using TMS.Repository.IRepository;
 namespace TMS.Controllers
 {
     [Route("ShipperManageAPI")]
     [ApiController]
     public class ShipperManageAPIController : ControllerBase
     {
-        ShipperManageRepository shipp = new ShipperManageRepository();
+        /// <summary>
+        /// 日志器
+        /// </summary>
+        private ILogger m_Logger;
+
+        private IShop shipp;
+        /// <summary>
+        /// 日志器工厂
+        /// </summary>
+        private ILoggerFactory m_LoggerFactory;
+        public ShipperManageAPIController(ILoggerFactory loggerFactory, IShop _shipp)
+        {
+            shipp = _shipp;
+            m_LoggerFactory = loggerFactory;
+            // 获取指定名字的日志器
+            m_Logger = m_LoggerFactory.CreateLogger("AppLogger");
+        }
         [HttpGet, Route("GetShipperManage")]
+        [Authorize]
         public IActionResult GetShipperManage(string ShipperName, string ShipperPhone, string DrivingTTime)
         {
-            var list = shipp.GetInfo();
-            if (!string.IsNullOrEmpty(ShipperName))//判断查找厂牌型号
+            try
             {
-                list = list.Where(x => x.ShipperName.Contains(ShipperName)).ToList();
+                var list = shipp.GetInfo();
+                if (!string.IsNullOrEmpty(ShipperName))//判断查找厂牌型号
+                {
+                    list = list.Where(x => x.ShipperName.Contains(ShipperName)).ToList();
+                }
+                if (!string.IsNullOrEmpty(ShipperPhone))//判断查找车牌号
+                {
+                    list = list.Where(x => x.ShipperPhone.Contains(ShipperPhone)).ToList();
+                }
+                if (!string.IsNullOrEmpty(DrivingTTime))//日期判断
+                {
+                    list = list.Where(x => x.DrivingTTime.Contains(DrivingTTime)).ToList();
+                }
+                return Ok(new { date = list });
             }
-            if (!string.IsNullOrEmpty(ShipperPhone))//判断查找车牌号
+            catch (Exception ex)
             {
-                list = list.Where(x => x.ShipperPhone.Contains(ShipperPhone)).ToList();
+                m_Logger.LogError(ex,"数据异常");
+                return Ok("请求错误");
             }
-            if (!string.IsNullOrEmpty(DrivingTTime))//日期判断
-            {
-                list = list.Where(x => x.DrivingTTime.Contains(DrivingTTime)).ToList();
-            }
-            return Ok(new { date = list });
+           
         }
+        [Authorize]
         /// <summary>
         /// 删除车辆信息
         /// </summary>
         /// <param name="CarId"></param>
         /// <returns></returns>
         [HttpPost, Route("DelShipperManage")]
-        public int DelShipperManage(int ShipperId)
+        public IActionResult DelShipperManage(int ShipperId)
         {
-            int i = shipp.ShippDelete(ShipperId);
-            return i;
+            try
+            {
+                int i = shipp.ShippDelete(ShipperId);
+                return Ok(i);
+            }
+            catch (Exception ex)
+            {
+                m_Logger.LogError(ex, "数据异常");
+                return Ok("请求错误");
+            }
+            
         }
         /// <summary>
         /// 添加
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost, Route("AddShipperManage")]
-        public int AddShipperManage(ShipperManage s)
+        public IActionResult AddShipperManage(ShipperManage s)
         {
-            int i = shipp.ShippAdd(s);
-            return i;
+            try
+            {
+                int i = shipp.ShippAdd(s);
+                return Ok(i);
+            }
+            catch (Exception ex)
+            {
+                m_Logger.LogError(ex, "数据异常");
+                return Ok("请求错误");
+            }
         }
+
         /// <summary>
         /// 反填
         /// </summary>
         /// <param name="ShipperId"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet,Route("FanShipperManage")]
         public IActionResult FanShipperManage(int ShipperId)
         {
-            ShipperManage s = shipp.GetInfo().Where(x => x.ShipperId.Equals(ShipperId)).FirstOrDefault();
-            return Ok(s);
+            try
+            {
+                ShipperManage s = shipp.GetInfo().Where(x => x.ShipperId.Equals(ShipperId)).FirstOrDefault();
+                return Ok(s);
+            }
+            catch (Exception ex)
+            {
+                m_Logger.LogError(ex, "数据异常");
+                return Ok("请求异常");
+            }
         }
         /// <summary>
         /// 修改
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost, Route("UptShipperManage")]
-        public int UptShipperManage(ShipperManage s) 
+        public IActionResult UptShipperManage(ShipperManage s) 
         {
-            int i = shipp.ShippUpdate(s);
-            return i;
+            try
+            {
+                int i = shipp.ShippUpdate(s);
+                return Ok(i);
+            }
+            catch (Exception ex)
+            {
+                m_Logger.LogError(ex, "数据异常");
+                return Ok("请求异常");
+                
+            }
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace TMS.Controllers.Basics
 {
     [Route("OutSourManage")]
     [ApiController]
+    [Authorize]
     public class OutsourcingManageAPIController : ControllerBase
     {
         OutsourcingManageRepository outsour = new OutsourcingManageRepository();
@@ -28,6 +30,7 @@ namespace TMS.Controllers.Basics
             }
             return Ok(new { date = list });
         }
+        [Authorize]
         /// <summary>
         /// 删除车辆信息
         /// </summary>
@@ -39,6 +42,7 @@ namespace TMS.Controllers.Basics
             int i = outsour.OutsourDelete(OutId);
             return i;
         }
+        [Authorize]
         /// <summary>
         /// 添加
         /// </summary>
@@ -50,6 +54,7 @@ namespace TMS.Controllers.Basics
             int i = outsour.OutsourAdd(o);
             return i;
         }
+        [Authorize]
         /// <summary>
         /// 反填
         /// </summary>
@@ -61,6 +66,7 @@ namespace TMS.Controllers.Basics
             OutsourcingManage o = outsour.GetInfo().Where(x => x.OutId.Equals(OutId)).FirstOrDefault();
             return Ok(o);
         }
+        [Authorize]
         /// <summary>
         /// 修改
         /// </summary>

@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMS.Model;
+using TMS.Repository.IRepository;
 namespace TMS.Repository
 {
-    public class CarManageRepository
+    public class CarManageRepository:IBase<CarManage>,ICar
     {
         /// <summary>
         /// 显示
@@ -15,8 +17,7 @@ namespace TMS.Repository
         public List<CarManage> GetInfo()
         {
             string sql = "select * from CarManage a join UserTable b on b.UserId=a.UserId";
-            List<CarManage> car = DapperHelper<CarManage>.Gets(sql);
-            return car;
+            return Gets(sql);
         }
         /// <summary>
         /// 添加
@@ -24,24 +25,10 @@ namespace TMS.Repository
         /// <returns></returns>
         public int CarAdd(CarManage car)
         {
+            DynamicParameters dynamic = new DynamicParameters();
+            dynamic.Add("car", car);
             string sql = "insert into CarManage values(null,@Factory,@CarLicense,@CarName,@Company,@Motorcycle,@CarColor,@PurchaseTime,@Operation,@InsuranceTime,@AsTime,@Maintain,@CarPicture,@InsurancePicture,@UserId)";
-            return DapperHelper<CarManage>.Execute(sql, new
-            {
-                @Factory = car.Factory,
-                @CarLicense = car.CarLicense,
-                @CarName = car.CarName,
-                @Company = car.Company,
-                @Motorcycle = car.Motorcycle,
-                @CarColor = car.CarColor,
-                @PurchaseTime = car.PurchaseTime,
-                @Operation = car.Operation,
-                @InsuranceTime = car.InsuranceTime,
-                @AsTime = car.AsTime,
-                @Maintain = car.Maintain,
-                @CarPicture = car.CarPicture,
-                @InsurancePicture = car.InsurancePicture,
-                @UserId=car.UserId
-            });
+            return CUD(sql, car);
         }
         /// <summary>
         /// 删除
@@ -50,8 +37,10 @@ namespace TMS.Repository
         /// <returns></returns>
         public int CarDelete(int CarId)
         {
-            string sql = "delete from CarManage where @CarId=CarId";
-            return DapperHelper<CarManage>.Execute(sql,new { CarId = CarId });
+            DynamicParameters dynamic =new DynamicParameters();
+            dynamic.Add("CarId", CarId);
+            string sql = "delete from CarManage where CarId=@CarId";
+            return CUD(sql, dynamic);
         }
         /// <summary>
         /// 修改
@@ -60,24 +49,24 @@ namespace TMS.Repository
         /// <returns></returns>
         public int CarUpdate(CarManage car)
         {
-            string sql = "update CarManage set @Factory=Factory,@CarLicense=CarLicense,@CarName=CarName,@Company=CarName,@Motorcycle=Motorcycle,@CarColor=CarColor,@PurchaseTime=PurchaseTime,@Operation=Operation,@InsuranceTime=InsuranceTime,@AsTime=AsTime,@Maintain=Maintain,@CarPicture=CarPicture,@InsurancePicture=InsurancePicture where @CarId=CarId";
-            return DapperHelper<CarManage>.Execute(sql, new {
-                @CarId=car.CarId,
-                @Factory = car.Factory,
-                @CarLicense = car.CarLicense,
-                @CarName = car.CarName,
-                @Company = car.Company,
-                @Motorcycle = car.Motorcycle,
-                @CarColor = car.CarColor,
-                @PurchaseTime = car.PurchaseTime,
-                @Operation = car.Operation,
-                @InsuranceTime = car.InsuranceTime,
-                @AsTime = car.AsTime,
-                @Maintain = car.Maintain,
-                @CarPicture = car.CarPicture,
-                @InsurancePicture = car.InsurancePicture,
-                @UserId = car.UserId
-            });
+            DynamicParameters dynamic = new DynamicParameters();
+            dynamic.Add("CarId", car.CarId);
+            dynamic.Add("Factory", car.Factory);
+            dynamic.Add("CarLicense", car.CarLicense);
+            dynamic.Add("CarName", car.CarName);
+            dynamic.Add("Company", car.Company);
+            dynamic.Add("Motorcycle", car.Motorcycle);
+            dynamic.Add("CarColor", car.CarColor);
+            dynamic.Add("PurchaseTime", car.PurchaseTime);
+            dynamic.Add("Operation", car.Operation);
+            dynamic.Add("InsuranceTime", car.InsuranceTime);
+            dynamic.Add("AsTime", car.AsTime);
+            dynamic.Add("Maintain", car.Maintain);
+            dynamic.Add("CarPicture", car.CarPicture);
+            dynamic.Add("InsurancePicture", car.InsurancePicture);
+            dynamic.Add("UserId", car.UserId);
+            string sql = "update CarManage set Factory=@Factory,CarLicense=@CarLicense,CarName=@CarName,Company=@CarName,Motorcycle=@Motorcycle,CarColor=@CarColor,PurchaseTime=@PurchaseTime,Operation=@Operation,InsuranceTime=@InsuranceTime,AsTime=@AsTime,Maintain=@Maintain,CarPicture=@CarPicture,InsurancePicture=@InsurancePicture where CarId=@CarId";
+            return CUD(sql, dynamic);
         }
     }
 }

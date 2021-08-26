@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TMS.Repository.IRepository
 {
-   public interface IBaseRepository<T> where T:class,new()
+    public interface IPersRepostiory<T> where T : class, new()
     {
-        List<T> Gets(string sql,object exec);
-        int CUD(string sql,object exec);
+        List<T> Gets(string sql, object exec);
+        int CUD(string sql, object exec);
     }
 }

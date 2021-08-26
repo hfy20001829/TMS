@@ -1,8 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using TMS.Model;
 using TMS.Repository;
@@ -12,37 +21,54 @@ namespace TMS.Controllers
     [ApiController]
     public class LonginAPIController : ControllerBase
     {
+        public JWT jWT;
+
+        /// <summary>
+        /// 日志器
+        /// </summary>
+        private ILogger m_Logger;
+
+        /// <summary>
+        /// 日志器工厂
+        /// </summary>
+        private ILoggerFactory m_LoggerFactory;
+
+        public LonginAPIController(JWT _jWT, ILoggerFactory loggerFactory)
+        {
+            jWT = _jWT;
+
+            m_LoggerFactory = loggerFactory;
+            // 获取指定名字的日志器
+            m_Logger = m_LoggerFactory.CreateLogger("AppLogger");
+        }
+
         LonginRepository longin = new LonginRepository();
         /// <summary>
         /// 登陆
         /// </summary>
         /// <param name="l"></param>
         /// <returns></returns>
-        [HttpPost,Route("LonGin")]
-        public int LonGin(Longin l)
+        [HttpPost, Route("LonGin")]
+     
+        public IActionResult LonGin(string Name=null,string Pass=null)
         {
-            var list = longin.GetInfo(l);
-            int i = 0;
-            if (list.Count == 0)
+            try
             {
-                return i = 0;
-            }
-            foreach (var item in list)
-            {
-                if (item.Name == l.Name && item.Pass == l.Pass)
+                var list = longin.GetInfo(Name,Pass);
+                if (list!=null)
                 {
-                    if (item.UserId == 0)
-                    {
-                        return i = 1;
-                    }
-                    else if (item.UserId == 1)
-                    {
-                        return i = 2;
-                    }
-                    return i = 0;
+                    return Ok(new { data = list, token = jWT.GetJWT() });
+                }
+                else
+                {
+                    return Ok("登陆失败");
                 }
             }
-            return i;
+            catch (Exception ex)
+            {
+                m_Logger.LogError(ex, "捕捉到异常");
+                return Ok("数据异常");
+            }
         }
     }
 }

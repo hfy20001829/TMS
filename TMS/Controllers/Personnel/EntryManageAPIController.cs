@@ -7,16 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TMS.Model;
-using TMS.Repository;
 using TMS.Repository.IRepository;
-namespace TMS.Controllers
+namespace TMS.Controllers.Personnel
 {
-    [Route("CarManageAPI")]
+    [Route("EntryManageAPI")]
     [ApiController]
-    public class CarManageAPIController : ControllerBase
+    public class EntryManageAPIController : ControllerBase
     {
-        //CarManageRepository car = new CarManageRepository();
-        public ICar car;
+        public IEntry entry;
         /// <summary>
         /// 日志器
         /// </summary>
@@ -25,9 +23,9 @@ namespace TMS.Controllers
         /// 日志器工厂
         /// </summary>
         private ILoggerFactory m_LoggerFactory;
-        public CarManageAPIController(ILoggerFactory loggerFactory, ICar _car)
+        public EntryManageAPIController(ILoggerFactory loggerFactory, IEntry _entry)
         {
-            car = _car;
+            entry = _entry;
             m_LoggerFactory = loggerFactory;
             // 获取指定名字的日志器
             m_Logger = m_LoggerFactory.CreateLogger("AppLogger");
@@ -37,27 +35,27 @@ namespace TMS.Controllers
         /// 显示车辆信息
         /// </summary>
         /// <returns></returns>
-        [HttpGet,Route("GetCarManage")]
-        public IActionResult GetCarManage(string Factory, string CarLicense, string CarName, string Company)
+        [HttpGet, Route("GetEntry")]
+        public IActionResult GetEntry(string EntrtName, int UserId, string EntryPost, string EntryUP)
         {
             try
             {
-                var list = car.GetInfo();
-                if (!string.IsNullOrEmpty(Factory))//判断查找厂牌型号
+                var list = entry.GetInfo();
+                if (!string.IsNullOrEmpty(EntrtName))//判断查找厂牌型号
                 {
-                    list = list.Where(x => x.Factory.Contains(Factory)).ToList();
+                    list = list.Where(x => x.EntrtName.Contains(EntrtName)).ToList();
                 }
-                if (!string.IsNullOrEmpty(CarLicense))//判断查找车牌号
+                if (UserId != 0)//判断查找车牌号
                 {
-                    list = list.Where(x => x.CarLicense.Contains(CarLicense)).ToList();
+                    list = list.Where(x => x.UserId == UserId).ToList();
                 }
-                if (!string.IsNullOrEmpty(CarName))//判断查找司机姓名
+                if (!string.IsNullOrEmpty(EntryPost))//判断查找司机姓名
                 {
-                    list = list.Where(x => x.CarName.Contains(CarName)).ToList();
+                    list = list.Where(x => x.EntryPost.Contains(EntryPost)).ToList();
                 }
-                if (!string.IsNullOrEmpty(Company))//判断查找所属公司
+                if (!string.IsNullOrEmpty(EntryUP))//判断查找所属公司
                 {
-                    list = list.Where(x => x.Company.Contains(Company)).ToList();
+                    list = list.Where(x => x.EntryUP.Contains(EntryUP)).ToList();
                 }
                 return Ok(new { date = list });
             }
@@ -66,7 +64,7 @@ namespace TMS.Controllers
                 m_Logger.LogError(ex, "数据异常错误");
                 return Ok("数据异常");
             }
-          
+
         }
         [Authorize]
         /// <summary>
@@ -74,12 +72,12 @@ namespace TMS.Controllers
         /// </summary>
         /// <param name="CarId"></param>
         /// <returns></returns>
-        [HttpPost, Route("DelCarManage")]
-        public IActionResult DelCarManage(int CarId)
+        [HttpPost, Route("DelEntry")]
+        public IActionResult DelEntry(int EntryId)
         {
             try
             {
-                int i = car.CarDelete(CarId);
+                int i = entry.EntryDelete(EntryId);
                 return Ok(i);
             }
             catch (Exception ex)
@@ -95,13 +93,13 @@ namespace TMS.Controllers
         /// <param name="c"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost, Route("AddCarManage")]
-        public IActionResult AddCarManage(CarManage c)
+        [HttpPost, Route("AddEntry")]
+        public IActionResult AddEntry(EntryManage e)
         {
             try
             {
-                int i = car.CarAdd(c);
-                return Ok(i);
+                int i = entry.EntryAdd(e);
+                return Ok(e);
             }
             catch (Exception ex)
             {
@@ -110,12 +108,12 @@ namespace TMS.Controllers
             }
         }
         [Authorize]
-        [HttpGet, Route("FanCarManage")]
-        public IActionResult FanCarManage(int carId)
+        [HttpGet, Route("FanEntry")]
+        public IActionResult FanEntry(int EntryId)
         {
             try
             {
-                CarManage s = car.GetInfo().Where(x => x.CarId.Equals(carId)).FirstOrDefault();
+                EntryManage s = entry.GetInfo().Where(x => x.EntryId.Equals(EntryId)).FirstOrDefault();
                 return Ok(s);
             }
             catch (Exception ex)
@@ -130,13 +128,13 @@ namespace TMS.Controllers
         ///// </summary>
         ///// <param name="c"></param>
         /// <returns></returns>
-        [HttpPost, Route("UptCarManage")]
+        [HttpPost, Route("UptEntry")]
         [Authorize]
-        public IActionResult UptCarManage(CarManage c)
+        public IActionResult UptEntry(EntryManage e)
         {
             try
             {
-                int i = car.CarUpdate(c);
+                int i = entry.EntryUpdate(e);
                 return Ok(i);
             }
             catch (Exception ex)
@@ -145,6 +143,5 @@ namespace TMS.Controllers
                 return Ok("数据异常");
             }
         }
-
     }
 }
